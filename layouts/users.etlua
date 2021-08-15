@@ -1,0 +1,12 @@
+<body>
+	<% for _, u in ipairs(this.users) do -%>
+	<article>
+		<header>
+			<h3><%= u.name %></h3>
+			<a href="<%= u.link %>"><%= u.link %></a>
+		</header>
+		<p><%= u.description or '' %></p>
+		<hr>
+	</article>
+	<% end -%>
+</body>

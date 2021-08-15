@@ -1,0 +1,18 @@
+<body>
+	<% for _, t in ipairs(this.tweets) do -%>
+	<article>
+		<header>
+			<h3><%= t.user.name %> &middot; <a href="<%= t.user.link %>">@<%= t.user.handle %></a></h3>
+		</header>
+		<%- t.content %>
+		<% if t.quote then -%>
+		<blockquote>
+			<%- t.quote.content %>
+			<cite><%= t.quote.timestamp %> &middot; <a href="<%= t.quote.user.link %>"><%= t.quote.user.name %></a></cite>
+		</blockquote>
+		<% end -%>
+		<p><%= t.timestamp %> &middot; <a href="<%= t.link %>"><%= t.link %></a></p>
+		<hr>
+	</article>
+	<% end -%>
+</body>
