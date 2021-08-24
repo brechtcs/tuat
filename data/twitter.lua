@@ -1,7 +1,7 @@
 local twitter = {}
 
-local cqueues = require 'cqueues'
 local json = require 'cjson'
+local socket = require 'socket'
 
 function twitter:get (endpoint, params)
 	local query = ''
@@ -11,26 +11,27 @@ function twitter:get (endpoint, params)
 		query = query .. sep .. param
 	end
 
-	local req = io.popen('twurl "' .. endpoint .. query .. '" 2> /dev/null')
+	local url = endpoint .. query
+	local req = io.popen('twurl "' .. url .. '" 2> /dev/null')
 	local data = json.decode(req:read('*all'))
 	req:close()
 
 	if self:has_rate_limit(data.errors) then
-		print('rate limit reached ' .. os.date('(%H:%M:%S)'))
-		cqueues.sleep(900)
+		io.stderr:write('rate limit reached ' .. os.date('(%H:%M:%S)\n'))
+		socket.sleep(900)
 		return self:get(endpoint, params)
 	else
-		return self:extract_errors(data)
+		return self:extract_errors(data, url)
 	end
 end
 
-function twitter:extract_errors (data)
+function twitter:extract_errors (data, url)
 	if not data.errors then
 		return data
 	end
 	local errs = ''
 	for _, err in ipairs(data.errors) do
-		errs = errs .. '\n\ttwurl error ' .. err.code .. ': ' .. err.message
+		errs = errs .. '\n\ttwurl error ' .. err.code .. ': ' .. err.message .. ' (' .. url .. ')'
 	end
 	return nil, errs
 end

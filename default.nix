@@ -3,21 +3,25 @@
 let
   lua = pkgs.luajit.withPackages(lp: [
     lp.cjson
-    lp.cqueues
     lp.etlua
+    lp.luasocket
     lp.luasql-sqlite3
     lp.lua_cliargs
     lp.net-url
     lp.router
   ]);
 
-  twurl = pkgs.twurl;
-  sqlite = pkgs.sqlite;
-  w3m = pkgs.w3m;
-
   src = ./.;
+  path = map (pkg: "${pkg}/bin") [
+    lua
+    pkgs.coreutils
+    pkgs.twurl
+    pkgs.sqlite
+    pkgs.w3m
+  ];
+
   tuat = ''
-    export PATH=${lua}/bin:${sqlite}/bin:${twurl}/bin:$PATH:${w3m}/bin
+    export PATH=${builtins.concatStringsSep ":" path}:$PATH
 
     if [[ -z "$LUA_PATH" ]]; then
       export LUA_PATH="${src}/?.lua;${src}/?/init.lua;;"
@@ -45,7 +49,9 @@ let
       fi
     elif [ "$1" = "view" ]; then
       shift
-      if [[ "$*" == *--format* ]]; then
+      if [[ -n "$REQUEST_METHOD" ]]; then
+        lua ${src}/tuat/view.lua
+      elif [[ "$*" == *--format* ]]; then
         lua ${src}/tuat/view.lua "$@"
       else
         lua ${src}/tuat/view.lua "$@" | w3m -T text/html

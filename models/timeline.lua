@@ -7,15 +7,15 @@ function Timeline:init (opts)
 	local tweets, err = self:load(opts)
 	if not tweets then return nil, err end
 	self:setcursor(tweets[#tweets])
-	self:rank(tweets, #opts.user == 0)
+	self:rank(tweets, not opts.user)
 	return self
 end
 
 function Timeline:load (opts)
-	if #opts.user > 1 then
+	if opts.user and #opts.user > 1 then
 		return self:users(opts.user)
 	else
-		return self:timeline(opts.user[1])
+		return self:timeline(opts.user and opts.user[1])
 	end
 end
 

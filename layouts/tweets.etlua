@@ -1,8 +1,14 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf8">
+	<title>tuat</title>
+</head>
 <body>
 	<% for _, t in ipairs(this.tweets) do -%>
 	<article>
 		<header>
-			<h3><%= t.user.name %> &middot; <a href="<%= t.user.link %>">@<%= t.user.handle %></a></h3>
+			<h3><%= t.user.name %> <a class="handle" href="<%= t.user.link %>">@<%= t.user.handle %></a></h3>
 		</header>
 		<%- t.content %>
 		<% if t.quote then -%>
@@ -11,8 +17,9 @@
 			<cite><%= t.quote.timestamp %> &middot; <a href="<%= t.quote.user.link %>"><%= t.quote.user.name %></a></cite>
 		</blockquote>
 		<% end -%>
-		<p><%= t.timestamp %> &middot; <a href="<%= t.link %>"><%= t.link %></a></p>
+		<p><a href="<%= t.link %>"><%= t.timestamp %></a></p>
 		<hr>
 	</article>
 	<% end -%>
 </body>
+</html>

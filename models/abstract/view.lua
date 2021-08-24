@@ -12,7 +12,7 @@ end
 
 function View:format (format)
 	if format == 'json' then
-		return json.encode(self)
+		return json.encode(self), { ['Content-Type'] = 'application/json' }
 	end
 	return nil, 'unsupported output format: ' .. format
 end
@@ -33,7 +33,7 @@ function View:render ()
 	local template = fd:read('*all')
 	fd:close()
 
-	return etlua.render(template, { this = self })
+	return etlua.render(template, { this = self }), { ['Content-Type'] = 'text/html' }
 end
 
 function View:layout()

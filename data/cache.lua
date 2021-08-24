@@ -2,7 +2,10 @@ local driver = require 'luasql.sqlite3'
 
 local env = driver.sqlite3()
 local sqlite = os.getenv('TUAT_CACHE') .. '/tuat.sqlite'
-local conn = assert(env:connect(sqlite))
+local conn = env:connect(sqlite)
+if not conn then
+	error('failed to open cache: ' .. sqlite)
+end
 
 -----------------
 -- Setup cache --

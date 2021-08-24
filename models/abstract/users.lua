@@ -17,7 +17,7 @@ function Users:format (format)
 				names = names .. s .. '--user=' .. u.screen_name
 			end
 		end
-		return names
+		return names, { ['Content-Type'] = 'text/plain' }
 	end
 	return View.format(self, format)
 end
