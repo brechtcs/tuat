@@ -11,7 +11,7 @@ function CGI:is_cgi ()
 end
 
 function CGI:get_method ()
-	return self.method
+	return self.method or 'GET'
 end
 
 function CGI:get_uri ()

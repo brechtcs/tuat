@@ -19,7 +19,7 @@ for _, a in ipairs(arg) do
 end
 
 -- execute route
-local ok, body, status, head = route(method or 'GET', uri, query)
+local ok, body, status, head = route(method, uri, query)
 if not ok then
 	body = 'Internal error'
 	status = 500
