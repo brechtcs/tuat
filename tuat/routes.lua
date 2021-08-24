@@ -1,9 +1,24 @@
+local BASE = os.getenv('TUAT_BASE_URI') or ''
+
 local neturl = require 'net.url'
 local router = require 'router'
 
 local function redirect ()
-	local base = os.getenv('TUAT_BASE_URI') or ''
-	return nil, 301, { Location = base .. '/timeline' }
+	return nil, 301, { Location = BASE .. '/timeline' }
+end
+
+local function intent (opts)
+	local view = opts.view
+	opts.view = nil
+	if not view then
+		return 'no view specified for intent', 400
+	end
+	local query = neturl.buildQuery(opts)
+	if #query > 0 then
+		query = '?' .. query
+	end
+	io.stderr:write(query)
+	return nil, 301, { Location = BASE .. '/' .. view .. query }
 end
 
 local function view (opts)
@@ -20,6 +35,7 @@ end
 
 local routes = router.new()
 routes:get('/', redirect)
+routes:get('/intent', intent)
 routes:get('/:view', view)
 
 return function (method, uri, query)
